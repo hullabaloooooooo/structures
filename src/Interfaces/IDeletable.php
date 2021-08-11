@@ -8,6 +8,8 @@ namespace Phox\Structures\Interfaces;
 interface IDeletable
 {
     /**
+     * Method keeps keys
+     * 
      * @param T $item
      */
     public function delete(mixed $item): void;

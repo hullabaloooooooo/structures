@@ -2,13 +2,12 @@
 
 namespace Phox\Structures\Interfaces;
 
-use ArrayAccess;
 use Phox\Structures\Exceptions\ArrayException;
 
 /**
  * @template T
  */
-interface IArray extends ArrayAccess
+interface IArray
 {
     /**
      * @param T $value
@@ -22,7 +21,7 @@ interface IArray extends ArrayAccess
      * @return T
      * @throws ArrayException
      */
-    public function get(int|string $key): mixed;
+    public function get(int $key): mixed;
 
     /**
      * Set element to array by index
@@ -31,24 +30,24 @@ interface IArray extends ArrayAccess
      * @param T $value
      * @throws ArrayException
      */
-    public function set(int|string|null $key, mixed $value): void;
+    public function set(int $key, mixed $value): void;
 
     /**
      * @param int|string $key
      * @param mixed $value
-     * @return T|null
+     * @return void
      */
-    public function replace(int|string $key, mixed $value): mixed;
+    public function replace(int $key, mixed $value): void;
 
     /**
      * @param int|string $key
-     * @return T|null
+     * @return void
      */
-    public function remove(int|string $key): mixed;
+    public function remove(int $key): void;
 
     /**
      * @param int $key
      * @return bool
      */
-    public function has(int|string $key): bool;
+    public function has(int $key): bool;
 }

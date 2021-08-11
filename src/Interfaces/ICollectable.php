@@ -13,6 +13,4 @@ interface ICollectable
     public function collect(mixed ...$items): void;
 
     public function merge(array $items): void;
-
-    public function clear(): void;
 }
