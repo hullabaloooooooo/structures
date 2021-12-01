@@ -2,42 +2,27 @@
 
 namespace Phox\Structures;
 
-use Phox\Structures\Abstracts\Traits\TArray;
-use Phox\Structures\Abstracts\Traits\TEnumerable;
-use Phox\Structures\Exceptions\CollectionTypeException;
+use Countable;
+use Phox\Structures\Interfaces\ICollectable;
 use Phox\Structures\Interfaces\ICollection;
+use Phox\Structures\Interfaces\IDeletable;
+use Phox\Structures\Interfaces\ISearchable;
 
 /**
  * @template T
+ * @extends EnumerableArray<T>
  * @implements ICollection<T>
+ * @implements IDeletable<T>
+ * @implements ICollectable<T>
+ * @implements ISearchable<T>
  */
-class Collection implements ICollection
+class Collection extends EnumerableArray implements ICollection, IDeletable, ICollectable, Countable, ISearchable
 {
-    use TEnumerable;
-    use TArray {
-        add as traitAdd;
-        set as traitSet;
-        replace as traitReplace;
-    }
-
-    /**
-     * @param class-string<T>|string $type
-     */
-    public function __construct(protected string $type)
-    {
-
-    }
-
     public function first(): mixed
     {
         $key = array_key_first($this->items);
 
-        return $this->tryGet($key);
-    }
-
-    public function isEmpty(): bool
-    {
-        return empty($this->items);
+        return is_null($key) ? null : $this->tryGet($key);
     }
 
     public function contains(mixed $item): bool
@@ -50,35 +35,33 @@ class Collection implements ICollection
         return array_keys($this->items);
     }
 
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    public function search(mixed $item): int|string|false
+    public function search(mixed $item): int|false
     {
         return array_search($item, $this->items);
     }
 
-    public function delete(mixed $item): void
+    public function searchAll(mixed $item): array
     {
-        $key = array_search($item, $this->items);
-
-        if ($key !== false) {
-            unset($this->items[$key]);
-        }
+        return array_keys($this->items, $item);
     }
 
-    public function deleteByKey(int|string $key): void
+    public function delete(mixed $item): void
     {
-        if ($this->has($key)) {
-            unset($this->items[$key]);
-        }
+        $keys = $this->searchAll($item);
+
+        $this->items = array_diff_key($this->items, array_flip($keys));
+    }
+
+    public function deleteFresh(mixed $value): void
+    {
+        $this->delete($value);
+
+        $this->items = array_values($this->items);
     }
 
     public function collect(mixed ...$items): void
     {
-        $this->clear();
+        $this->clearItems();
 
         foreach ($items as $item) {
             is_array($item)
@@ -90,20 +73,10 @@ class Collection implements ICollection
     public function merge(array $items): void
     {
         foreach ($items as $item) {
-            $this->check($item);
+            $this->checkType($item);
         }
 
         $this->items = array_merge($this->items, $items);
-    }
-
-    public function clear(): void
-    {
-        $this->items = [];
-    }
-
-    public function all(): array
-    {
-        return $this->items;
     }
 
     public function count(): int
@@ -111,51 +84,8 @@ class Collection implements ICollection
         return count($this->items);
     }
 
-    public function add(mixed $value): void
-    {
-        $this->check($value);
-
-        $this->traitAdd($value);
-    }
-
-    public function set(int|string|null $key, mixed $value): void
-    {
-        $this->check($value);
-
-        $this->traitSet($key, $value);
-    }
-
-    public function replace(int|string $key, mixed $value): mixed
-    {
-        $this->check($value);
-
-        return $this->traitReplace($key, $value);
-    }
-
-    public function tryGet(int|string $key, mixed $default = null): mixed
+    public function tryGet(int $key, mixed $default = null): mixed
     {
         return $this->items[$key] ?? $default;
-    }
-
-    public function allows(mixed $value): bool
-    {
-        $actualType = is_object($value) ? get_class($value) : gettype($value);
-
-        if ($this->type == 'callable') {
-            return is_callable($value);
-        }
-
-        if (is_object($value)) {
-            return $value instanceof $this->type || $this->type == 'object';
-        }
-
-        return $actualType == $this->type;
-    }
-
-    protected function check(mixed $value): void
-    {
-        if (!$this->allows($value)) {
-            throw new CollectionTypeException();
-        }
     }
 }

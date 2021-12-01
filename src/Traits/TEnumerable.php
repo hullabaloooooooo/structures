@@ -1,8 +1,8 @@
 <?php
 
-namespace Phox\Structures\Abstracts\Traits;
+namespace Phox\Structures\Traits;
 
-trait TEnumerable
+trait TEnumerable 
 {
     protected array $items = [];
 

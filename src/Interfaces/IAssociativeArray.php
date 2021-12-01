@@ -7,7 +7,7 @@ use Phox\Structures\Exceptions\ArrayException;
 /**
  * @template T
  */
-interface IArray
+interface IAssociativeArray
 {
     /**
      * @param T $value
@@ -15,37 +15,37 @@ interface IArray
     public function add(mixed $value): void;
 
     /**
-     * @param int $key
+     * @param int|string $key
      * @return T
      * @throws ArrayException
      */
-    public function get(int $key): mixed;
+    public function get(int|string $key): mixed;
 
     /**
      * Set element to array by index
      *
-     * @param int $key
+     * @param int|string $key
      * @param T $value
      * @throws ArrayException
      */
-    public function set(int $key, mixed $value): void;
+    public function set(int|string $key, mixed $value): void;
 
     /**
-     * @param int $key
+     * @param int|string $key
      * @param T $value
      * @return void
      */
-    public function replace(int $key, mixed $value): void;
+    public function replace(int|string $key, mixed $value): void;
 
     /**
-     * @param int $key
+     * @param int|string $key
      * @return void
      */
-    public function remove(int $key): void;
+    public function remove(int|string $key);
 
     /**
-     * @param int $key
+     * @param int|string $key
      * @return bool
      */
-    public function has(int $key): bool;
+    public function has(int|string $key): bool;
 }

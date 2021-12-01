@@ -2,22 +2,27 @@
 
 namespace Tests\Unit;
 
-use Phox\Structures\Abstracts\Arrayable;
-use Phox\Structures\Exceptions\ArrayException;
+use TypeError;
 use PHPUnit\Framework\TestCase;
+use Phox\Structures\ArrayObject;
+use Phox\Structures\Exceptions\ArrayException;
 
 class ArrayableTest extends TestCase
 {
-    protected function getAnonymousArrayable(array $initial = []): Arrayable
+    protected function getArrayable(string $type, array $initial = []): ArrayObject
     {
-        return new class($initial) extends Arrayable {
-            public function __construct(protected array $items) {}
-        };
+        $object = new ArrayObject($type);
+
+        foreach ($initial as $item) {
+            $object->add($item);
+        }
+
+        return $object;
     }
 
     public function testArrayAccess(): void
     {
-        $arrayable = $this->getAnonymousArrayable([5, 2, 6]);
+        $arrayable = $this->getArrayable('integer', [5, 2, 6]);
         $arrayable[4] = 66;
         $arrayable[] = 22;
 
@@ -26,9 +31,17 @@ class ArrayableTest extends TestCase
         $this->assertEquals(22, $arrayable[5]);
     }
 
+    public function testStringKeys(): void
+    {
+        $arrayable = $this->getArrayable('integer', [1, 2, 3]);
+
+        $this->expectException(TypeError::class);
+        $arrayable->set('index', 123);
+    }
+
     public function testGet(): void
     {
-        $arrayable = $this->getAnonymousArrayable([2, 3]);
+        $arrayable = $this->getArrayable('integer', [2, 3]);
 
         $this->assertEquals(2, $arrayable->get(0));
         $this->assertEquals(3, $arrayable->get(1));
@@ -39,26 +52,27 @@ class ArrayableTest extends TestCase
 
     public function testReplace(): void
     {
-        $arrayable = $this->getAnonymousArrayable([2, 3]);
+        $arrayable = $this->getArrayable('integer', [2, 3]);
 
-        $oldValue = $arrayable->replace(1, 5);
+        $arrayable->replace(1, 5);
 
         $this->assertEquals(5, $arrayable->get(1));
-        $this->assertEquals(3, $oldValue);
     }
 
     public function testSet(): void
     {
-        $arrayable = $this->getAnonymousArrayable();
+        $arrayable = $this->getArrayable('integer');
 
         $arrayable->set(3, 8);
+        $arrayable->set(null, 5);
 
         $this->assertEquals(8, $arrayable->get(3));
+        $this->assertEquals(5, $arrayable->get(4));
     }
 
     public function testExistsSet(): void
     {
-        $arrayable = $this->getAnonymousArrayable([1]);
+        $arrayable = $this->getArrayable('integer', [1]);
 
         $this->expectException(ArrayException::class);
 
@@ -67,7 +81,7 @@ class ArrayableTest extends TestCase
 
     public function testAdd(): void
     {
-        $arrayable = $this->getAnonymousArrayable([1]);
+        $arrayable = $this->getArrayable('integer', [1]);
 
         $arrayable->add(5);
 
@@ -76,7 +90,7 @@ class ArrayableTest extends TestCase
 
     public function testHas(): void
     {
-        $arrayable = $this->getAnonymousArrayable([1]);
+        $arrayable = $this->getArrayable('integer', [1]);
 
         $this->assertTrue($arrayable->has(0));
         $this->assertFalse($arrayable->has(1));
@@ -84,10 +98,25 @@ class ArrayableTest extends TestCase
 
     public function testRemove(): void
     {
-        $arrayable = $this->getAnonymousArrayable([1, 2]);
+        $arrayable = $this->getArrayable('integer', [1, 2]);
 
         $arrayable->remove(1);
 
         $this->assertFalse($arrayable->has(1));
+    }
+
+    public function testAllowsMethod(): void
+    {
+        $arrayable = $this->getArrayable('string');
+
+        $this->assertTrue($arrayable->allows('teststring'));
+        $this->assertFalse($arrayable->allows(1));
+    }
+
+    public function testGetTypeMethod(): void
+    {
+        $arrayable = $this->getArrayable(static::class);
+
+        $this->assertEquals(static::class, $arrayable->getType());
     }
 }
