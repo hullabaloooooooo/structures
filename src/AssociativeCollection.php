@@ -5,7 +5,7 @@ namespace Phox\Structures;
 use Phox\Structures\Interfaces\IAssociativeArray;
 use Phox\Structures\Traits\TAssociativeArray;
 
-class AssociativeArray extends ArrayObject implements IAssociativeArray
+class AssociativeCollection extends Collection implements IAssociativeArray
 {
     use TAssociativeArray;
 }
