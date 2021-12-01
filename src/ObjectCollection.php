@@ -8,6 +8,7 @@ use Phox\Structures\Interfaces\IObjectCollection;
 /**
  * @template T
  * @extends Collection<T>
+ * @implements IObjectCollection<T>
  */
 class ObjectCollection extends Collection implements IObjectCollection
 {

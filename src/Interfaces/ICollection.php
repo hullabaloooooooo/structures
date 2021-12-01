@@ -2,11 +2,8 @@
 
 namespace Phox\Structures\Interfaces;
 
-use Countable;
-
 /**
  * @template T
- * @extends IArray<T>|IEnumerable<T>|ICountable<T>|IDeletable<T>
  */
 interface ICollection
 {
@@ -31,7 +28,7 @@ interface ICollection
     /**
      * Delete items by value and reset keys
      *
-     * @param mixed $value
+     * @param T $value
      * @return void
      */
     public function deleteFresh(mixed $value): void;

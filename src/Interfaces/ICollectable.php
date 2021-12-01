@@ -12,5 +12,8 @@ interface ICollectable
      */
     public function collect(mixed ...$items): void;
 
+    /**
+     * @param array<T> $items
+     */
     public function merge(array $items): void;
 }

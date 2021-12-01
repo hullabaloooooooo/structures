@@ -22,6 +22,7 @@
     "php": "^8.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^9.5"
+    "phpunit/phpunit": "^9.5",
+    "vimeo/psalm": "^4.12"
   }
 }

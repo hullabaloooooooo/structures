@@ -5,6 +5,10 @@ namespace Phox\Structures\Abstracts;
 use ArrayAccess;
 use Phox\Structures\Interfaces\IArray;
 
+/**
+ * @template T
+ * @implements IArray<T>
+ */
 abstract class Arrayable implements ArrayAccess, IArray
 {
     public function offsetExists($offset): bool

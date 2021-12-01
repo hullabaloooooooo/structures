@@ -2,6 +2,9 @@
 
 namespace Phox\Structures\Interfaces;
 
+/**
+ * @template T
+ */
 interface ISearchable 
 {
     /**
@@ -15,7 +18,7 @@ interface ISearchable
     /**
      * Get all keys by value
      *
-     * @param mixed $item
+     * @param T $item
      * @return array
      */
     public function searchAll(mixed $item): array;

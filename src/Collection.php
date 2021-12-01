@@ -10,7 +10,11 @@ use Phox\Structures\Interfaces\ISearchable;
 
 /**
  * @template T
+ * @extends EnumerableArray<T>
  * @implements ICollection<T>
+ * @implements IDeletable<T>
+ * @implements ICollectable<T>
+ * @implements ISearchable<T>
  */
 class Collection extends EnumerableArray implements ICollection, IDeletable, ICollectable, Countable, ISearchable
 {

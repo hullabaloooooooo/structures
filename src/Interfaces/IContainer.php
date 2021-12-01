@@ -2,12 +2,15 @@
 
 namespace Phox\Structures\Interfaces;
 
+/**
+ * @template T
+ */
 interface IContainer 
 {
     /**
      * Get all items from container
      *
-     * @return array
+     * @return array<T>
      */
     public function getItems(): array;
 
