@@ -1,14 +1,15 @@
 <?php
 
 
-use Phox\Structures\AssociativeCollection;
 use PHPUnit\Framework\TestCase;
+use Phox\Structures\Abstracts\Type;
+use Phox\Structures\AssociativeCollection;
 
 class AssociativeCollectionTest extends TestCase
 {
     public function testCollectionMethodsWithStringKey(): void
     {
-        $collection = new AssociativeCollection('integer');
+        $collection = new AssociativeCollection(Type::INTEGER);
 
         $collection->set('key', 1);
 

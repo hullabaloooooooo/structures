@@ -7,28 +7,39 @@ use Phox\Structures\Abstracts\Arrayable;
 use Phox\Structures\Exceptions\ArrayException;
 use Phox\Structures\Exceptions\StructureTypeException;
 use Phox\Structures\Interfaces\IMap;
+use Phox\Structures\Interfaces\IType;
 
 /**
  * @template T
  * @template K
+ * @extends Arrayable<T>
  * @implements IMap<T, K>
  */
 class Map extends Arrayable implements IMap
 {
+    /**
+     * @var array<K>
+     */
     protected array $keys = [];
+
+    /**
+     * @var array<T>
+     */
     protected array $values = [];
 
     /**
-     * @param string|class-string<K> $keyType
-     * @param string|class-string<T> $valueType
+     * @param IType<K> $keyType
+     * @param IType<T> $valueType
      */
-    public function __construct(protected string $keyType, protected string $valueType)
+    public function __construct(protected IType $keyType, protected IType $valueType)
     {
 
     }
 
     /**
-     * @inheritDoc
+     * @param K $key
+     * @param T $value
+     * @return void
      */
     public function set(mixed $key, mixed $value): void
     {
@@ -43,7 +54,8 @@ class Map extends Arrayable implements IMap
     }
 
     /**
-     * @inheritDoc
+     * @param K $key
+     * @return T
      */
     public function get(mixed $key): mixed
     {
@@ -53,7 +65,9 @@ class Map extends Arrayable implements IMap
     }
 
     /**
-     * @inheritDoc
+     * @param K $key
+     * @param T $value
+     * @return void
      */
     public function replace(mixed $key, mixed $value): void
     {
@@ -70,7 +84,8 @@ class Map extends Arrayable implements IMap
     }
 
     /**
-     * @inheritDoc
+     * @param K $key
+     * @return void
      */
     public function remove(mixed $key): void
     {
@@ -82,6 +97,10 @@ class Map extends Arrayable implements IMap
         }
     }
 
+    /**
+     * @param K $key
+     * @return boolean
+     */
     public function has(mixed $key): bool
     {
         $index = array_search($key, $this->keys);
@@ -99,19 +118,14 @@ class Map extends Arrayable implements IMap
         return $this->allowsType($this->valueType, $value);
     }
 
-    protected function allowsType(string $expected, mixed $value): bool
+    /**
+     * @param IType<mixed> $expected
+     * @param mixed $value
+     * @return boolean
+     */
+    protected function allowsType(IType $expected, mixed $value): bool
     {
-        $actualType = is_object($value) ? get_class($value) : gettype($value);
-
-        if ($expected == 'callable') {
-            return is_callable($value);
-        }
-
-        if (is_object($value)) {
-            return $value instanceof $expected || $expected == 'object';
-        }
-
-        return $actualType == $expected;
+        return $expected->allows($value);
     }
 
     protected function checkTypes(mixed $key, mixed $value): void

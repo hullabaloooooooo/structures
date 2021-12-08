@@ -2,14 +2,15 @@
 
 namespace Tests\Unit;
 
-use Phox\Structures\EnumerableArray;
 use PHPUnit\Framework\TestCase;
+use Phox\Structures\Abstracts\Type;
+use Phox\Structures\EnumerableArray;
 
 class EnumerableArrayTest extends TestCase 
 {
-    public function testEnumerableCanForeach()
+    public function testEnumerableCanForeach(): void
     {
-        $enumerableArray = new EnumerableArray('integer');
+        $enumerableArray = new EnumerableArray(Type::INTEGER);
         $items = [5, 7, 1];
         
         foreach ($items as $item) {

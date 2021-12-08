@@ -19,7 +19,7 @@ interface ISearchable
      * Get all keys by value
      *
      * @param T $item
-     * @return array
+     * @return array<int|string>
      */
     public function searchAll(mixed $item): array;
 }

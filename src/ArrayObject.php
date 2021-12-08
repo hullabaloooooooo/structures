@@ -2,11 +2,13 @@
 
 namespace Phox\Structures;
 
+use Phox\Structures\Abstracts\Type;
+use Phox\Structures\Interfaces\IType;
 use Phox\Structures\Abstracts\Arrayable;
 use Phox\Structures\Interfaces\IContainer;
 use Phox\Structures\Exceptions\ArrayException;
-use Phox\Structures\Exceptions\StructureTypeException;
 use Phox\Structures\Interfaces\ITypedStructure;
+use Phox\Structures\Exceptions\StructureTypeException;
 
 /**
  * @template T
@@ -16,12 +18,15 @@ use Phox\Structures\Interfaces\ITypedStructure;
  */
 class ArrayObject extends Arrayable implements IContainer, ITypedStructure
 {
+    /**
+     * @var array<T>
+     */
     protected array $items = [];
 
     /**
-     * @param class-string<T>|string $type
+     * @param IType<T> $type
      */
-    public function __construct(protected string $type)
+    public function __construct(protected readonly IType $type)
     {
         //
     }
@@ -75,25 +80,15 @@ class ArrayObject extends Arrayable implements IContainer, ITypedStructure
 
     public function allows(mixed $value): bool
     {
-        $actualType = is_object($value) ? get_class($value) : gettype($value);
-
-        if ($this->type == 'callable') {
-            return is_callable($value);
-        }
-
-        if (is_object($value)) {
-            return $value instanceof $this->type || $this->type == 'object';
-        }
-
-        return $actualType == $this->type;
+        return $this->type->allows($value);
     }
 
-    public function getType(): string
+    public function getType(): IType
     {
         return $this->type;
     }
 
-    protected function checkType(mixed $value)
+    protected function checkType(mixed $value): void
     {
         if (!$this->allows($value)) {
             throw new StructureTypeException();

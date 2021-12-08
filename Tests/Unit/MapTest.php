@@ -1,15 +1,17 @@
 <?php
 
-
+use JetBrains\PhpStorm\ArrayShape;
 use Phox\Structures\Map;
 use PHPUnit\Framework\TestCase;
+use Phox\Structures\Abstracts\Type;
+use Phox\Structures\Abstracts\ObjectType;
 
 class MapTest extends TestCase
 {
 
     public function testGet(): void
     {
-        $map = new Map(TestCase::class, 'object');
+        $map = new Map(ObjectType::fromClass(TestCase::class), Type::OBJECT);
 
         $obj = new stdClass();
         $map->set($this, $obj);
@@ -19,7 +21,7 @@ class MapTest extends TestCase
 
     public function testRemove(): void
     {
-        $map = new Map(TestCase::class, 'object');
+        $map = new Map(ObjectType::fromClass(TestCase::class), Type::OBJECT);
 
         $map->set($this, new stdClass());
         $map->remove($this);
@@ -29,7 +31,7 @@ class MapTest extends TestCase
 
     public function testHas(): void
     {
-        $map = new Map('array', 'string');
+        $map = new Map(Type::ARRAY, Type::STRING);
 
         $map->set([1, 2, 3], 'tested');
 
@@ -38,7 +40,7 @@ class MapTest extends TestCase
 
     public function testSet(): void
     {
-        $map = new Map('array', 'string');
+        $map = new Map(Type::ARRAY, Type::STRING);
 
         $map->set([1, 2, 3], 'tested');
 
@@ -48,26 +50,26 @@ class MapTest extends TestCase
     public function testAllows(): void
     {
         $cases = [
-            'integer' => 1,
-            'string' => 'test',
-            'array' => [],
-            'object' => new stdClass(),
-            TestCase::class => $this,
+            ['type' => Type::INTEGER, 'value' => 1],
+            ['type' => Type::STRING, 'value' => 'test'],
+            ['type' => Type::ARRAY, 'value' => []],
+            ['type' => Type::OBJECT, 'value' => new stdClass()],
+            ['type' => ObjectType::fromClass(TestCase::class), 'value' => $this],
         ];
 
-        foreach ($cases as $keyType => $keyValue) {
-            foreach ($cases as $valueType => $value) {
-                $map = new Map($keyType, $valueType);
+        foreach ($cases as $key) {
+            foreach ($cases as $value) {
+                $map = new Map($key['type'], $value['type']);
 
-                $this->assertTrue($map->allowsKey($keyValue));
-                $this->assertTrue($map->allows($value));
+                $this->assertTrue($map->allowsKey($key['value']));
+                $this->assertTrue($map->allows($value['value']));
             }
         }
     }
 
     public function testReplace(): void
     {
-        $map = new Map(stdClass::class, TestCase::class);
+        $map = new Map(ObjectType::fromClass(stdClass::class), ObjectType::fromClass(TestCase::class));
 
         $key = new stdClass();
         $mock = $this->createMock(static::class);
@@ -82,7 +84,7 @@ class MapTest extends TestCase
 
     public function testArrayAccess(): void
     {
-        $map = new Map(TestCase::class, 'object');
+        $map = new Map(ObjectType::fromClass(TestCase::class), Type::OBJECT);
 
         $obj = new stdClass();
         $map[$this] = $obj;

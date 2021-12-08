@@ -14,7 +14,7 @@ interface ITypedStructure
     public function allows(mixed $value): bool;
 
     /**
-     * @return string|class-string<T>
+     * @return IType<T>
      */
-    public function getType(): string;
+    public function getType(): IType;
 }
