@@ -26,7 +26,7 @@ class ObjectType implements IType
     }
 
     /**
-     * @param class-string<T>|string $class
+     * @param class-string<T> $class
      * @return static<T>
      */
     public static function fromClass(string $class): self

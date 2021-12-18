@@ -1,5 +1,9 @@
 Tests/ export-ignore
 phpunit.xml export-ignore
+phpstan.neon export-ignore
 .gitignore export-ignore
 .gitattributes export-ignore
 .github/ export-ignore
+docker-compose.yml export-ignore
+Dockerfile export-ignore
+composer.lock export-ignore

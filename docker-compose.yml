@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  lib:
+    image: phox-pro/structures:latest
+    tty: true
+    volumes:
+      - './:/home/lib/'

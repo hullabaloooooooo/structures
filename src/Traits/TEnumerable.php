@@ -11,7 +11,7 @@ trait TEnumerable
         return current($this->items);
     }
 
-    public function next()
+    public function next(): void
     {
         next($this->items);
     }

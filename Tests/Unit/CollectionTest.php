@@ -18,8 +18,6 @@ class CollectionTest extends TestCase
         $this->expectException(StructureTypeException::class);
 
         $collection->add(1);
-
-        $item = $collection->get(1); 
     }
 
     public function testCollectionAllowSameType(): void

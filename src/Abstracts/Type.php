@@ -18,11 +18,11 @@ enum Type: string implements IType
     case RESOURCE = 'resource';
     case CALLABLE = 'callable';
 
-    public static function fromValue(mixed $value): static
+    public static function fromValue(mixed $value): Type
     {
         return is_callable($value) 
-            ? static::CALLABLE
-            : static::from(gettype($value));
+            ? Type::CALLABLE
+            : Type::from(gettype($value));
     }
 
     public function getType(): string
@@ -32,7 +32,7 @@ enum Type: string implements IType
 
     public function isSame(mixed $value): bool
     {
-        if ($this == static::CALLABLE) {
+        if ($this == Type::CALLABLE) {
             return is_callable($value);
         }
 

@@ -50,32 +50,44 @@ class ArrayObject extends Arrayable implements IContainer, ITypedStructure
     {
         $this->checkType($value);
 
-        array_push($this->items, $value);
+        $this->items[] = $value;
     }
 
     public function get(int $key): mixed
     {
-        return $this->fullKeysGet($key);
+        return $this->items[$key] ?? throw new ArrayException();
     }
 
     public function set(?int $key, mixed $value): void
     {
-        $this->fullKeysSet($key, $value);
+        if (is_null($key)) {
+            $this->add($value);
+
+            return;
+        }
+
+        if ($this->has($key)) {
+            throw new ArrayException();
+        }
+
+        $this->replace($key, $value);
     }
 
     public function replace(int $key, mixed $value): void
     {
-        $this->fullKeysReplace($key, $value);
+        $this->checkType($value);
+
+        $this->items[$key] = $value;
     }
 
     public function remove(int $key): void
     {
-        $this->fullKeysRemove($key);
+        unset($this->items[$key]);
     }
 
     public function has(int $key): bool
     {
-        return $this->fullKeysHas($key);
+        return array_key_exists($key, $this->items);
     }
 
     public function allows(mixed $value): bool
@@ -93,42 +105,5 @@ class ArrayObject extends Arrayable implements IContainer, ITypedStructure
         if (!$this->allows($value)) {
             throw new StructureTypeException();
         }
-    }
-
-    protected function fullKeysGet(int|string $key): mixed
-    {
-        return $this->items[$key] ?? throw new ArrayException();
-    }
-
-    protected function fullKeysSet(int|string|null $key, mixed $value): void
-    {
-        if (is_null($key)) {
-            $this->add($value);
-
-            return;
-        }
-
-        if ($this->fullKeysHas($key)) {
-            throw new ArrayException();
-        }
-
-        $this->fullKeysReplace($key, $value);
-    }
-
-    protected function fullKeysReplace(int|string $key, mixed $value): void
-    {
-        $this->checkType($value);
-
-        $this->items[$key] = $value;
-    }
-
-    protected function fullKeysRemove(int|string $key): void
-    {
-        unset($this->items[$key]);
-    }
-
-    protected function fullKeysHas(int|string $key): bool
-    {
-        return array_key_exists($key, $this->items);
     }
 }
