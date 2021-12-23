@@ -16,7 +16,10 @@
   "autoload-dev": {
     "psr-4": {
       "Tests\\": "Tests/"
-    }
+    },
+    "files": [
+      "src/Functions/type.php"
+    ]
   },
   "require": {
     "php": "^8.1"
