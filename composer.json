@@ -11,15 +11,15 @@
   "autoload": {
     "psr-4": {
       "Phox\\Structures\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Tests\\": "Tests/"
     },
     "files": [
       "src/Functions/type.php"
     ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "Tests/"
+    }
   },
   "require": {
     "php": "^8.1"
