@@ -52,4 +52,9 @@ class AssociativeObjectCollection extends ObjectCollection implements IAssociati
             parent::remove($key);
         }
     }
+
+    public function tryGet(int|string $key, mixed $default = null): mixed
+    {
+        return is_string($key) ? $this->items[$key] ?? $default : parent::tryGet($key, $default);
+    }
 }
