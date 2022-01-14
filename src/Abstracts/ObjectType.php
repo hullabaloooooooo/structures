@@ -31,7 +31,7 @@ class ObjectType implements IType
      */
     public static function fromClass(string $class): self
     {
-        if (!class_exists($class)) {
+        if (!class_exists($class) && !interface_exists($class)) {
             throw new LogicException();
         }
 
