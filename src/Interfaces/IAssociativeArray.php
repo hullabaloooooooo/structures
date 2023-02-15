@@ -41,7 +41,7 @@ interface IAssociativeArray
      * @param int|string $key
      * @return void
      */
-    public function remove(int|string $key);
+    public function remove(int|string $key): void;
 
     /**
      * @param int|string $key

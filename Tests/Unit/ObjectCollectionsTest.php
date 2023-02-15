@@ -2,29 +2,24 @@
 
 namespace Tests\Unit;
 
-use Phox\Structures\Exceptions\StructureTypeException;
-use Phox\Structures\ObjectCollection;
+use Phox\Structures\Abstracts\ObjectType;
 use PHPUnit\Framework\TestCase;
+use Phox\Structures\Abstracts\Type;
+use Phox\Structures\ObjectCollection;
+use Phox\Structures\Exceptions\StructureTypeException;
 
 class ObjectCollectionsTest extends TestCase
 {
-    public function testCannotCreateObjectCollectionWithNoObjectType(): void
-    {
-        $this->expectException(StructureTypeException::class);
-
-        new ObjectCollection('string');
-    }
-
     public function testCreationObjectCollections(): void
     {
-        $objectCollection = new ObjectCollection(static::class);
+        $objectCollection = new ObjectCollection(ObjectType::fromClass(static::class));
 
         $this->assertTrue($objectCollection->allows($this));
     }
     
     public function testHasObjectClassMethod(): void
     {
-        $objectCollection = new ObjectCollection(TestCase::class);
+        $objectCollection = new ObjectCollection(ObjectType::fromClass(TestCase::class));
 
         $objectCollection->add($this);
 

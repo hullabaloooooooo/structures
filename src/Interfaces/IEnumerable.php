@@ -8,6 +8,7 @@ use Iterator;
  * Interpretation of Linked List data structure
  *
  * @template T
+ * @extends Iterator<int, T>
  */
 interface IEnumerable extends Iterator
 {

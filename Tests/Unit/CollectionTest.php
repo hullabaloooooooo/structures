@@ -2,16 +2,18 @@
 
 namespace Tests\Unit;
 
-use Phox\Structures\Collection;
-use Phox\Structures\Exceptions\StructureTypeException;
-use PHPUnit\Framework\TestCase;
+use Phox\Structures\Abstracts\ObjectType;
 use stdClass;
+use Phox\Structures\Collection;
+use PHPUnit\Framework\TestCase;
+use Phox\Structures\Abstracts\Type;
+use Phox\Structures\Exceptions\StructureTypeException;
 
 class CollectionTest extends TestCase
 {
     public function testAllows(): void
     {
-        $collection = new Collection(CollectionTest::class);
+        $collection = new Collection(ObjectType::fromClass(CollectionTest::class));
 
         $this->expectException(StructureTypeException::class);
 
@@ -20,8 +22,8 @@ class CollectionTest extends TestCase
 
     public function testCollectionAllowSameType(): void
     {
-        $collection = new Collection(TestCase::class);
-        $objectCollection = new Collection('object');
+        $collection = new Collection(ObjectType::fromClass(TestCase::class));
+        $objectCollection = new Collection(Type::OBJECT);
 
         $this->assertTrue($collection->allows($this));
         $this->assertFalse($collection->allows(new stdClass()));
@@ -32,7 +34,7 @@ class CollectionTest extends TestCase
 
     public function testTryGetMethod(): void
     {
-        $collection = new Collection('string');
+        $collection = new Collection(Type::STRING);
 
         $collection->set(5, 'value 5');
 
@@ -43,7 +45,7 @@ class CollectionTest extends TestCase
 
     public function testMergeMethod(): void
     {
-        $collection = new Collection('integer');
+        $collection = new Collection(Type::INTEGER);
 
         $collection->add(2);
         $collection->add(5);
@@ -57,7 +59,7 @@ class CollectionTest extends TestCase
 
     public function testCollectMethod(): void
     {
-        $collection = new Collection('integer');
+        $collection = new Collection(Type::INTEGER);
 
         $collection->collect(1, 2, 3);
         $this->assertEquals([1, 2, 3], $collection->getItems());
@@ -71,7 +73,7 @@ class CollectionTest extends TestCase
 
     public function testFirstMethod(): void
     {
-        $collection = new Collection('integer');
+        $collection = new Collection(Type::INTEGER);
 
         $this->assertNull($collection->first());
 
@@ -84,7 +86,7 @@ class CollectionTest extends TestCase
     
     public function testContainsMethod(): void
     {
-        $collection = new Collection('integer');
+        $collection = new Collection(Type::INTEGER);
 
         $this->assertFalse($collection->contains(5));
         $collection->add(5);
@@ -93,7 +95,7 @@ class CollectionTest extends TestCase
 
     public function testGetKeysMethod(): void
     {
-        $collection = new Collection('integer');
+        $collection = new Collection(Type::INTEGER);
 
         $this->assertEquals([], $collection->getKeys());
 
@@ -105,7 +107,7 @@ class CollectionTest extends TestCase
 
     public function testSearchMethod(): void
     {
-        $collection = new Collection('integer');
+        $collection = new Collection(Type::INTEGER);
 
         $this->assertFalse($collection->search(5));
 
@@ -122,7 +124,7 @@ class CollectionTest extends TestCase
 
     public function testSearchAllMethod(): void
     {
-        $collection = new Collection('integer');
+        $collection = new Collection(Type::INTEGER);
 
         $collection->merge([5, 2, 3, 2, 2]);
 
@@ -131,7 +133,7 @@ class CollectionTest extends TestCase
 
     public function testDeleteMethod(): void
     {
-        $collection = new Collection('integer');
+        $collection = new Collection(Type::INTEGER);
 
         $collection->merge([5, 2, 3, 2, 2]);
         $collection->delete(2);
@@ -141,7 +143,7 @@ class CollectionTest extends TestCase
 
     public function testDeleteFreshMethod(): void
     {
-        $collection = new Collection('integer');
+        $collection = new Collection(Type::INTEGER);
 
         $collection->merge([5, 2, 3, 2, 2]);
         $collection->deleteFresh(2);
@@ -151,7 +153,7 @@ class CollectionTest extends TestCase
 
     public function testCountMethod(): void
     {
-        $collection = new Collection('integer');
+        $collection = new Collection(Type::INTEGER);
         
         $this->assertEquals(0, $collection->count());
 

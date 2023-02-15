@@ -2,8 +2,12 @@
 
 namespace Phox\Structures\Traits;
 
+/**
+ * @template T
+ */
 trait TEnumerable 
 {
+    /** @var T[] */
     protected array $items = [];
 
     public function current(): mixed
@@ -11,7 +15,7 @@ trait TEnumerable
         return current($this->items);
     }
 
-    public function next()
+    public function next(): void
     {
         next($this->items);
     }

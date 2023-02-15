@@ -21,7 +21,7 @@ interface ICollection
     /**
      * Get all keys
      *
-     * @return array
+     * @return array<int>
      */
     public function getKeys(): array;
 

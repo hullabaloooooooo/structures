@@ -2,25 +2,21 @@
 
 namespace Phox\Structures;
 
-use Phox\Structures\Exceptions\StructureTypeException;
+use Phox\Structures\Abstracts\ObjectType;
 use Phox\Structures\Interfaces\IObjectCollection;
 
 /**
- * @template T
+ * @template T of object
  * @extends Collection<T>
  * @implements IObjectCollection<T>
  */
 class ObjectCollection extends Collection implements IObjectCollection
 {
     /**
-     * @param class-string<T> $type
+     * @param ObjectType<T> $type
      */
-    public function __construct(string $type)
+    public function __construct(ObjectType $type)
     {
-        if (!class_exists($type)) {
-            throw new StructureTypeException();
-        }
-
         parent::__construct($type);
     }
 

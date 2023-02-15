@@ -2,11 +2,13 @@
 
 namespace Phox\Structures;
 
+use Phox\Structures\Abstracts\Type;
+use Phox\Structures\Interfaces\IType;
 use Phox\Structures\Abstracts\Arrayable;
 use Phox\Structures\Interfaces\IContainer;
 use Phox\Structures\Exceptions\ArrayException;
-use Phox\Structures\Exceptions\StructureTypeException;
 use Phox\Structures\Interfaces\ITypedStructure;
+use Phox\Structures\Exceptions\StructureTypeException;
 
 /**
  * @template T
@@ -16,12 +18,15 @@ use Phox\Structures\Interfaces\ITypedStructure;
  */
 class ArrayObject extends Arrayable implements IContainer, ITypedStructure
 {
+    /**
+     * @var array<T>
+     */
     protected array $items = [];
 
     /**
-     * @param class-string<T>|string $type
+     * @param IType<T> $type
      */
-    public function __construct(protected string $type)
+    public function __construct(protected readonly IType $type)
     {
         //
     }
@@ -45,67 +50,15 @@ class ArrayObject extends Arrayable implements IContainer, ITypedStructure
     {
         $this->checkType($value);
 
-        array_push($this->items, $value);
+        $this->items[] = $value;
     }
 
     public function get(int $key): mixed
     {
-        return $this->fullKeysGet($key);
-    }
-
-    public function set(?int $key, mixed $value): void
-    {
-        $this->fullKeysSet($key, $value);
-    }
-
-    public function replace(int $key, mixed $value): void
-    {
-        $this->fullKeysReplace($key, $value);
-    }
-
-    public function remove(int $key): void
-    {
-        $this->fullKeysRemove($key);
-    }
-
-    public function has(int $key): bool
-    {
-        return $this->fullKeysHas($key);
-    }
-
-    public function allows(mixed $value): bool
-    {
-        $actualType = is_object($value) ? get_class($value) : gettype($value);
-
-        if ($this->type == 'callable') {
-            return is_callable($value);
-        }
-
-        if (is_object($value)) {
-            return $value instanceof $this->type || $this->type == 'object';
-        }
-
-        return $actualType == $this->type;
-    }
-
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    protected function checkType(mixed $value)
-    {
-        if (!$this->allows($value)) {
-            throw new StructureTypeException();
-        }
-    }
-
-    protected function fullKeysGet(int|string $key): mixed
-    {
         return $this->items[$key] ?? throw new ArrayException();
     }
 
-    protected function fullKeysSet(int|string|null $key, mixed $value): void
+    public function set(?int $key, mixed $value): void
     {
         if (is_null($key)) {
             $this->add($value);
@@ -113,27 +66,44 @@ class ArrayObject extends Arrayable implements IContainer, ITypedStructure
             return;
         }
 
-        if ($this->fullKeysHas($key)) {
+        if ($this->has($key)) {
             throw new ArrayException();
         }
 
-        $this->fullKeysReplace($key, $value);
+        $this->replace($key, $value);
     }
 
-    protected function fullKeysReplace(int|string $key, mixed $value): void
+    public function replace(int $key, mixed $value): void
     {
         $this->checkType($value);
 
         $this->items[$key] = $value;
     }
 
-    protected function fullKeysRemove(int|string $key): void
+    public function remove(int $key): void
     {
         unset($this->items[$key]);
     }
 
-    protected function fullKeysHas(int|string $key): bool
+    public function has(int $key): bool
     {
         return array_key_exists($key, $this->items);
+    }
+
+    public function allows(mixed $value): bool
+    {
+        return $this->type->allows($value);
+    }
+
+    public function getType(): IType
+    {
+        return $this->type;
+    }
+
+    protected function checkType(mixed $value): void
+    {
+        if (!$this->allows($value)) {
+            throw new StructureTypeException();
+        }
     }
 }

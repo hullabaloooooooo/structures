@@ -1,14 +1,15 @@
 <?php
 
 
-use Phox\Structures\AssociativeArray;
 use PHPUnit\Framework\TestCase;
+use Phox\Structures\Abstracts\Type;
+use Phox\Structures\AssociativeArray;
 
 class AssociativeArrayTest extends TestCase
 {
     public function testReplace(): void
     {
-        $array = new AssociativeArray('integer');
+        $array = new AssociativeArray(Type::INTEGER);
 
         $array->set('test', 1);
         $array->replace('test', 5);
@@ -18,7 +19,7 @@ class AssociativeArrayTest extends TestCase
 
     public function testGetAndSet(): void
     {
-        $array = new AssociativeArray('integer');
+        $array = new AssociativeArray(Type::INTEGER);
 
         $array->set('test', 1);
 
@@ -27,7 +28,7 @@ class AssociativeArrayTest extends TestCase
 
     public function testRemove(): void
     {
-        $array = new AssociativeArray('integer');
+        $array = new AssociativeArray(Type::INTEGER);
 
         $array->set('test', 1);
         $array->remove('test');
@@ -37,7 +38,7 @@ class AssociativeArrayTest extends TestCase
 
     public function testHas(): void
     {
-        $array = new AssociativeArray('integer');
+        $array = new AssociativeArray(Type::INTEGER);
 
         $array->set('test', 1);
 
