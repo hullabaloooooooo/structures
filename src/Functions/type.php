@@ -12,7 +12,7 @@ if (!function_exists('type')) {
      */
     function type(string $original): IType
     {
-        return class_exists($original)
+        return class_exists($original) || interface_exists($original) || enum_exists($original)
             ? ObjectType::fromClass($original)
             : Type::from($original);
     }
