@@ -11,5 +11,6 @@ use Phox\Structures\Traits\TEnumerable;
  */
 abstract class Enumerable implements IEnumerable
 {
+    /** @phpstan-use TEnumerable<T> */
     use TEnumerable;
 }

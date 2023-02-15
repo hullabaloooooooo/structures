@@ -7,9 +7,13 @@ use PHPUnit\Framework\TestCase;
 
 class EnumerableTest extends TestCase
 {
+    /**
+     * @return Enumerable<int>
+     */
     protected function getAnonymousEnumerable(): Enumerable
     {
         return new class extends Enumerable {
+            /** @var int[] */
             protected array $items = [5, 2, 6];
         };
     }

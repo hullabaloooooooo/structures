@@ -1,20 +1,15 @@
-FROM php:8.1.0-cli
-
-RUN apt-get update && apt-get install -y \
-    curl \
+FROM php:cli
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+    && php -r "if (hash_file('sha384', 'composer-setup.php') === '55ce33d7678c5a611085589f1f3ddf8b3c52d662cd01d4ba75c0ee0459970c2200a51f492d557530c71c15d8dba01eae') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" \
+    && php composer-setup.php \
+    && php -r "unlink('composer-setup.php');" \
+    && mv composer.phar /usr/local/bin/composer \
+    && apt-get update && apt-get install -y \
+    git \
     zip \
-    unzip \
-    libonig-dev
-
-RUN pecl install xdebug; \
-    docker-php-ext-enable xdebug; \
-    echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-    echo "display_startup_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-    echo "display_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-    echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini;
-
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-
-RUN docker-php-ext-install mbstring
-
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+    unzip
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug
+COPY . /app
+WORKDIR /app
+RUN composer install

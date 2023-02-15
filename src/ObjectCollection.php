@@ -6,7 +6,7 @@ use Phox\Structures\Abstracts\ObjectType;
 use Phox\Structures\Interfaces\IObjectCollection;
 
 /**
- * @template T
+ * @template T of object
  * @extends Collection<T>
  * @implements IObjectCollection<T>
  */

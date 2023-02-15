@@ -5,8 +5,7 @@ namespace Phox\Structures\Abstracts;
 use Phox\Structures\Interfaces\IType;
 
 /**
- * @template T
- * @inherits IType<T>
+ * @implements IType<mixed>
  */
 enum Type: string implements IType
 {

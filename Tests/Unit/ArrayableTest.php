@@ -31,6 +31,7 @@ class ArrayableTest extends TestCase
 
     public function testArrayAccess(): void
     {
+        /** @var ArrayObject<int> $arrayable */
         $arrayable = $this->getArrayable(Type::INTEGER, [5, 2, 6]);
         $arrayable[4] = 66;
         $arrayable[] = 22;

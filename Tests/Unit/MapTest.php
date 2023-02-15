@@ -1,10 +1,12 @@
 <?php
 
-use JetBrains\PhpStorm\ArrayShape;
+namespace Tests\Unit;
+
 use Phox\Structures\Map;
 use PHPUnit\Framework\TestCase;
 use Phox\Structures\Abstracts\Type;
 use Phox\Structures\Abstracts\ObjectType;
+use stdClass;
 
 class MapTest extends TestCase
 {
@@ -82,6 +84,7 @@ class MapTest extends TestCase
         $this->assertSame($this, $map->get($key));
     }
 
+    /** @noinspection PhpIllegalArrayKeyTypeInspection */
     public function testArrayAccess(): void
     {
         $map = new Map(ObjectType::fromClass(TestCase::class), Type::OBJECT);

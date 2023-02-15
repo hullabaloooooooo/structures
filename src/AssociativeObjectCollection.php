@@ -6,7 +6,7 @@ use Phox\Structures\Exceptions\ArrayException;
 use Phox\Structures\Interfaces\IAssociativeArray;
 
 /**
- * @template T
+ * @template T of object
  * @extends ObjectCollection<T>
  * @implements IAssociativeArray<T>
  */

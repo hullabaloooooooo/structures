@@ -49,8 +49,8 @@ class Map extends Arrayable implements IMap
             throw new ArrayException();
         }
 
-        array_push($this->keys, $key);
-        array_push($this->values, $value);
+        $this->keys[] = $key;
+        $this->values[] = $value;
     }
 
     /**
@@ -76,8 +76,8 @@ class Map extends Arrayable implements IMap
         $index = array_search($key, $this->keys);
 
         if ($index === false) {
-            array_push($this->keys, $key);
-            array_push($this->values, $value);
+            $this->keys[] = $key;
+            $this->values[] = $value;
         } else {
             $this->values[$index] = $value;
         }
@@ -103,9 +103,7 @@ class Map extends Arrayable implements IMap
      */
     public function has(mixed $key): bool
     {
-        $index = array_search($key, $this->keys);
-
-        return $index !== false;
+        return in_array($key, $this->keys);
     }
 
     public function allowsKey(mixed $key): bool

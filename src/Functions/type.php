@@ -6,10 +6,9 @@ use Phox\Structures\Abstracts\ObjectType;
 
 if (!function_exists('type')) {
     /**
-     * @param string|class-string $original
-     * @return IType
-     *
-     * @throws ValueError
+     * @template T
+     * @param class-string<T> $original
+     * @return IType<T>
      */
     function type(string $original): IType
     {
@@ -20,6 +19,11 @@ if (!function_exists('type')) {
 }
 
 if (!function_exists('typeOf')) {
+    /**
+     * @template T
+     * @param T $value
+     * @return IType<T>
+     */
     function typeOf(mixed $value): IType
     {
         return is_object($value)

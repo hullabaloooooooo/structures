@@ -21,7 +21,7 @@ class EnumerableMap extends Map implements IEnumerable
     /**
      * @return K
      */
-    public function key()
+    public function key(): mixed
     {
         $key = key($this->keys);
 

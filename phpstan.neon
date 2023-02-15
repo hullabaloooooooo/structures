@@ -3,6 +3,5 @@ parameters:
     phpVersion: 80100
     paths:
         - src
-        - Tests
     excludePaths:
-        - 'src/Abstracts/Type.php'
+        - 'Tests'
