@@ -6,7 +6,9 @@ use Countable;
 use Phox\Structures\Interfaces\ICollectable;
 use Phox\Structures\Interfaces\ICollection;
 use Phox\Structures\Interfaces\IDeletable;
+use Phox\Structures\Interfaces\IGenerative;
 use Phox\Structures\Interfaces\ISearchable;
+use Phox\Structures\Interfaces\IType;
 
 /**
  * @template T
@@ -15,8 +17,10 @@ use Phox\Structures\Interfaces\ISearchable;
  * @implements IDeletable<T>
  * @implements ICollectable<T>
  * @implements ISearchable<T>
+ * @implements IGenerative<T>
  */
-class Collection extends EnumerableArray implements ICollection, IDeletable, ICollectable, Countable, ISearchable
+class Collection extends EnumerableArray
+    implements ICollection, IDeletable, ICollectable, Countable, ISearchable, IGenerative
 {
     public function first(): mixed
     {
@@ -87,5 +91,41 @@ class Collection extends EnumerableArray implements ICollection, IDeletable, ICo
     public function tryGet(int $key, mixed $default = null): mixed
     {
         return $this->items[$key] ?? $default;
+    }
+
+    public function map(callable $mapper, ?IType $newType = null, bool $keepKeys = false): static
+    {
+        $newCollection = new static($newType ?? $this->type);
+
+        foreach ($this->items as $key => $item) {
+            $keepKeys
+                ? $newCollection->set($key, $item)
+                : $newCollection->add($mapper($item));
+        }
+
+        return $newCollection;
+    }
+
+    public function filter(callable $filter, bool $keepKeys = false): static
+    {
+        $newCollection = clone $this;
+        $newCollection->clearItems();
+
+        foreach ($this->items as $key => $item) {
+            if ($filter($item)) {
+                $keepKeys
+                    ? $newCollection->set($key, $item)
+                    : $newCollection->add($item);
+            }
+        }
+
+        return $newCollection;
+    }
+
+    public function each(callable $callback): void
+    {
+        foreach ($this->items as &$item) {
+            $callback($item);
+        }
     }
 }

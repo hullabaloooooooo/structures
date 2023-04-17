@@ -24,12 +24,4 @@ interface ICollection
      * @return array<int>
      */
     public function getKeys(): array;
-
-    /**
-     * Delete items by value and reset keys
-     *
-     * @param T $value
-     * @return void
-     */
-    public function deleteFresh(mixed $value): void;
 }

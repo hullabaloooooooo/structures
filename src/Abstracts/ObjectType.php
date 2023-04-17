@@ -9,12 +9,12 @@ use Phox\Structures\Interfaces\IType;
  * @template T of object
  * @implements IType<T>
  */
-class ObjectType implements IType 
+readonly class ObjectType implements IType
 {
     /**
      * @param class-string<T> $class
      */
-    protected function __construct(protected readonly string $class)
+    protected function __construct(protected string $class)
     {
         //
     }
