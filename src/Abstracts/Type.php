@@ -16,6 +16,8 @@ enum Type: string implements IType
     case OBJECT = 'object';
     case RESOURCE = 'resource';
     case CALLABLE = 'callable';
+    case BOOLEAN = 'boolean';
+    case NULL = 'NULL';
 
     public static function fromValue(mixed $value): Type
     {

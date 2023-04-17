@@ -2,8 +2,10 @@
 
 namespace Phox\Structures;
 
+use LogicException;
 use Phox\Structures\Abstracts\ObjectType;
 use Phox\Structures\Interfaces\IObjectCollection;
+use Phox\Structures\Interfaces\IType;
 
 /**
  * @template T of object
@@ -15,8 +17,12 @@ class ObjectCollection extends Collection implements IObjectCollection
     /**
      * @param ObjectType<T> $type
      */
-    public function __construct(ObjectType $type)
+    public function __construct(IType $type)
     {
+        if (!($type instanceof ObjectType)) {
+            throw new LogicException();
+        }
+
         parent::__construct($type);
     }
 

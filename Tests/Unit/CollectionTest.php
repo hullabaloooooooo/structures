@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use Phox\Structures\Abstracts\ObjectType;
+use Phox\Structures\Interfaces\IGenerative;
 use stdClass;
 use Phox\Structures\Collection;
 use PHPUnit\Framework\TestCase;
@@ -161,5 +162,87 @@ class CollectionTest extends TestCase
         $collection->merge([2, 3]);
 
         $this->assertEquals(3, $collection->count());
+    }
+
+    public function testMapMethod(): void
+    {
+        $collection = new Collection(Type::INTEGER);
+
+        $collection->add(5);
+
+        $mapped = $collection->map(fn(): string => 'hello', Type::STRING);
+
+        $this->assertEquals('hello', $mapped->first());
+    }
+
+    public function testFilterMethod(): void
+    {
+        $collection = new Collection(Type::INTEGER);
+
+        $collection->collect([1, 2, 3, 4, 5, 6]);
+        $filtered = $collection->filter(fn(int $item): bool => $item > 3);
+
+        $this->assertCount(3, $filtered);
+
+        foreach ([4, 5, 6] as $value) {
+            $this->assertContains($value, $filtered);
+        }
+    }
+
+    public function testGenerativeReturnsStatic(): void
+    {
+        $collection = new class(Type::INTEGER) extends Collection {};
+        $collection->collect(1, 2, 3, 4);
+
+        $this->assertInstanceOf(IGenerative::class, $collection);
+
+        $newCollection = $collection->filter(fn() => true);
+        $this->assertEquals($collection::class, $newCollection::class);
+
+        $newMappedCollection = $newCollection->map(fn(): bool => true, Type::BOOLEAN);
+        $this->assertEquals($collection::class, $newMappedCollection::class);
+        $this->assertEquals(Type::BOOLEAN, $newMappedCollection->getType());
+    }
+
+    public function testGenerativeSaveKeys(): void
+    {
+        $data = [
+            5 => 1,
+            1 => 2,
+            99 => 3,
+        ];
+
+        $collection = new Collection(Type::INTEGER);
+
+        foreach ($data as $key => $value) {
+            $collection->set($key, $value);
+        }
+
+        $filteredCollection = $collection->filter(fn() => true, true);
+        $mappedCollection = $collection->map(fn($item) => $item, keepKeys: true);
+
+        foreach ($data as $key => $value) {
+            $this->assertEquals($value, $filteredCollection->get($key));
+            $this->assertEquals($value, $mappedCollection->get($key));
+        }
+    }
+
+    public function testEachMethod(): void
+    {
+        $collection = new Collection(Type::INTEGER);
+
+        $mock = $this->getMockBuilder(stdClass::class)
+            ->addMethods(['test'])
+            ->getMock();
+        $mock->expects($this->exactly(4))->method('test');
+
+        $collection->collect(1, 1, 1, 1);
+
+        $collection->each([$mock, 'test']);
+
+        $collection->each(function (int &$item) {
+            $item = 2;
+        });
+        $this->assertEquals([2, 2, 2, 2], $collection->getItems());
     }
 }

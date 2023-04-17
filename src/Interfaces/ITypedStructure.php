@@ -8,6 +8,11 @@ namespace Phox\Structures\Interfaces;
 interface ITypedStructure 
 {
     /**
+     * @param IType<T> $type
+     */
+    public function __construct(IType $type);
+
+    /**
      * @param T $value
      * @return bool
      */
