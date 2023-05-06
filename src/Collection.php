@@ -9,6 +9,7 @@ use Phox\Structures\Interfaces\IDeletable;
 use Phox\Structures\Interfaces\IGenerative;
 use Phox\Structures\Interfaces\ISearchable;
 use Phox\Structures\Interfaces\IType;
+use Phox\Structures\Interfaces\ITypedStructure;
 
 /**
  * @template T
@@ -74,10 +75,12 @@ class Collection extends EnumerableArray
         }
     }
 
-    public function merge(array $items): void
+    public function merge(array $items, bool $checkType = true): void
     {
-        foreach ($items as $item) {
-            $this->checkType($item);
+        if ($checkType) {
+            foreach ($items as $item) {
+                $this->checkType($item);
+            }
         }
 
         $this->items = array_merge($this->items, $items);
@@ -88,18 +91,13 @@ class Collection extends EnumerableArray
         return count($this->items);
     }
 
-    public function tryGet(int $key, mixed $default = null): mixed
-    {
-        return $this->items[$key] ?? $default;
-    }
-
     public function map(callable $mapper, ?IType $newType = null, bool $keepKeys = false): static
     {
         $newCollection = new static($newType ?? $this->type);
 
         foreach ($this->items as $key => $item) {
             $keepKeys
-                ? $newCollection->set($key, $item)
+                ? $newCollection->set($key, $mapper($item))
                 : $newCollection->add($mapper($item));
         }
 
@@ -108,8 +106,7 @@ class Collection extends EnumerableArray
 
     public function filter(callable $filter, bool $keepKeys = false): static
     {
-        $newCollection = clone $this;
-        $newCollection->clearItems();
+        $newCollection = new static($this->type);
 
         foreach ($this->items as $key => $item) {
             if ($filter($item)) {
@@ -127,5 +124,94 @@ class Collection extends EnumerableArray
         foreach ($this->items as &$item) {
             $callback($item);
         }
+    }
+
+    public function where(
+        Operator $operator,
+        mixed $value,
+        int|string|DepthKey|null $key = null,
+        bool $keepKeys = false,
+    ): static
+    {
+        $newCollection = new static($this->type);
+
+        foreach ($this->items as $item) {
+            $itemValue = $this->getValueFromItemByKey($item, $key);
+
+            if (
+                match ($operator) {
+                    Operator::Equal => $itemValue == $value,
+                    Operator::GreaterThan => $itemValue > $value,
+                    Operator::GreaterThanOrEqual => $itemValue >= $value,
+                    Operator::LessThan => $itemValue < $value,
+                    Operator::LessThanOrEqual => $itemValue <= $value,
+                    Operator::In => in_array($itemValue, $value),
+                }
+            ) {
+                $keepKeys
+                    ? $newCollection->set($key, $item)
+                    : $newCollection->add($item);
+            }
+        }
+
+        return $newCollection;
+    }
+
+    public function select(int|string|DepthKey $key, ?IType $type = null, bool $keepKeys = false): static
+    {
+        return $this->map(fn(mixed $item): mixed => $this->getValueFromItemByKey($item, $key), $type, $keepKeys);
+    }
+
+    public function replaceItems(ITypedStructure|array $data, bool $keepOriginal): void
+    {
+        if (!$keepOriginal) {
+            $this->items = [];
+        }
+
+        $this->items = array_replace($this->items, is_array($data) ? $data : $data->toArray());
+    }
+
+    public function join(ITypedStructure|array $data): void
+    {
+        $this->items += is_array($data) ? $data : $data->toArray();
+    }
+
+    protected function getValueFromItemByKey(mixed $item, int|string|DepthKey|null $key): mixed
+    {
+        if (is_null($key)) {
+            return $item;
+        }
+
+        if ($key instanceof DepthKey) {
+            return $this->getValueByDepthKey($item, $key);
+        }
+
+        if (is_array($item)) {
+            return $item[$key];
+        }
+
+        if (is_object($item)) {
+            return $item->$key;
+        }
+
+        return null;
+    }
+
+    protected function getValueByDepthKey(mixed $item, DepthKey $key): mixed
+    {
+        if (!(is_array($item) || is_object($item))) {
+            return null;
+        }
+
+        $path = $key->getPath();
+        $value = $item;
+
+        foreach ($path as $subKey) {
+            $value = is_array($value)
+                ? $value[$subKey]
+                : $value->$subKey;
+        }
+
+        return $value;
     }
 }

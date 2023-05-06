@@ -58,6 +58,11 @@ class ArrayObject extends Arrayable implements IContainer, ITypedStructure
         return $this->items[$key] ?? throw new ArrayException();
     }
 
+    public function tryGet(int $key, mixed $default = null): mixed
+    {
+        return $this->items[$key] ?? $default;
+    }
+
     public function set(?int $key, mixed $value): void
     {
         if (is_null($key)) {
@@ -105,5 +110,10 @@ class ArrayObject extends Arrayable implements IContainer, ITypedStructure
         if (!$this->allows($value)) {
             throw new StructureTypeException();
         }
+    }
+
+    public function toArray(): array
+    {
+        return $this->items;
     }
 }

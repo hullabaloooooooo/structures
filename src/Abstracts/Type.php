@@ -9,20 +9,20 @@ use Phox\Structures\Interfaces\IType;
  */
 enum Type: string implements IType
 {
-    case INTEGER = 'integer';
-    case DOUBLE = 'double';
-    case STRING = 'string';
-    case ARRAY = 'array';
-    case OBJECT = 'object';
-    case RESOURCE = 'resource';
-    case CALLABLE = 'callable';
-    case BOOLEAN = 'boolean';
-    case NULL = 'NULL';
+    case Integer = 'integer';
+    case Double = 'double';
+    case String = 'string';
+    case Array = 'array';
+    case Object = 'object';
+    case Resource = 'resource';
+    case Callable = 'callable';
+    case Boolean = 'boolean';
+    case Null = 'NULL';
 
     public static function fromValue(mixed $value): Type
     {
         return is_callable($value) 
-            ? Type::CALLABLE
+            ? Type::Callable
             : Type::from(gettype($value));
     }
 
@@ -33,7 +33,7 @@ enum Type: string implements IType
 
     public function isSame(mixed $value): bool
     {
-        if ($this == Type::CALLABLE) {
+        if ($this == Type::Callable) {
             return is_callable($value);
         }
 

@@ -31,8 +31,7 @@ class ArrayableTest extends TestCase
 
     public function testArrayAccess(): void
     {
-        /** @var ArrayObject<int> $arrayable */
-        $arrayable = $this->getArrayable(Type::INTEGER, [5, 2, 6]);
+        $arrayable = $this->getArrayable(Type::Integer, [5, 2, 6]);
         $arrayable[4] = 66;
         $arrayable[] = 22;
 
@@ -43,7 +42,7 @@ class ArrayableTest extends TestCase
 
     public function testStringKeys(): void
     {
-        $arrayable = $this->getArrayable(Type::INTEGER, [1, 2, 3]);
+        $arrayable = $this->getArrayable(Type::Integer, [1, 2, 3]);
 
         $this->expectException(TypeError::class);
 
@@ -53,7 +52,7 @@ class ArrayableTest extends TestCase
 
     public function testGet(): void
     {
-        $arrayable = $this->getArrayable(Type::INTEGER, [2, 3]);
+        $arrayable = $this->getArrayable(Type::Integer, [2, 3]);
 
         $this->assertEquals(2, $arrayable->get(0));
         $this->assertEquals(3, $arrayable->get(1));
@@ -64,7 +63,7 @@ class ArrayableTest extends TestCase
 
     public function testReplace(): void
     {
-        $arrayable = $this->getArrayable(Type::INTEGER, [2, 3]);
+        $arrayable = $this->getArrayable(Type::Integer, [2, 3]);
 
         $arrayable->replace(1, 5);
 
@@ -73,7 +72,7 @@ class ArrayableTest extends TestCase
 
     public function testSet(): void
     {
-        $arrayable = $this->getArrayable(Type::INTEGER);
+        $arrayable = $this->getArrayable(Type::Integer);
 
         $arrayable->set(3, 8);
         $arrayable->set(null, 5);
@@ -84,7 +83,7 @@ class ArrayableTest extends TestCase
 
     public function testExistsSet(): void
     {
-        $arrayable = $this->getArrayable(Type::INTEGER, [1]);
+        $arrayable = $this->getArrayable(Type::Integer, [1]);
 
         $this->expectException(ArrayException::class);
 
@@ -93,7 +92,7 @@ class ArrayableTest extends TestCase
 
     public function testAdd(): void
     {
-        $arrayable = $this->getArrayable(Type::INTEGER, [1]);
+        $arrayable = $this->getArrayable(Type::Integer, [1]);
 
         $arrayable->add(5);
 
@@ -102,7 +101,7 @@ class ArrayableTest extends TestCase
 
     public function testHas(): void
     {
-        $arrayable = $this->getArrayable(Type::INTEGER, [1]);
+        $arrayable = $this->getArrayable(Type::Integer, [1]);
 
         $this->assertTrue($arrayable->has(0));
         $this->assertFalse($arrayable->has(1));
@@ -110,7 +109,7 @@ class ArrayableTest extends TestCase
 
     public function testRemove(): void
     {
-        $arrayable = $this->getArrayable(Type::INTEGER, [1, 2]);
+        $arrayable = $this->getArrayable(Type::Integer, [1, 2]);
 
         $arrayable->remove(1);
 
@@ -119,7 +118,7 @@ class ArrayableTest extends TestCase
 
     public function testAllowsMethod(): void
     {
-        $arrayable = $this->getArrayable(Type::STRING);
+        $arrayable = $this->getArrayable(Type::String);
 
         $this->assertTrue($arrayable->allows('teststring'));
         $this->assertFalse($arrayable->allows(1));
