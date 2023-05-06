@@ -10,7 +10,7 @@ class EnumerableArrayTest extends TestCase
 {
     public function testEnumerableCanForeach(): void
     {
-        $enumerableArray = new EnumerableArray(Type::INTEGER);
+        $enumerableArray = new EnumerableArray(Type::Integer);
         $items = [5, 7, 1];
         
         foreach ($items as $item) {

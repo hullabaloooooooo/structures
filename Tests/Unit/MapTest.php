@@ -13,7 +13,7 @@ class MapTest extends TestCase
 
     public function testGet(): void
     {
-        $map = new Map(ObjectType::fromClass(TestCase::class), Type::OBJECT);
+        $map = new Map(ObjectType::fromClass(TestCase::class), Type::Object);
 
         $obj = new stdClass();
         $map->set($this, $obj);
@@ -23,7 +23,7 @@ class MapTest extends TestCase
 
     public function testRemove(): void
     {
-        $map = new Map(ObjectType::fromClass(TestCase::class), Type::OBJECT);
+        $map = new Map(ObjectType::fromClass(TestCase::class), Type::Object);
 
         $map->set($this, new stdClass());
         $map->remove($this);
@@ -33,7 +33,7 @@ class MapTest extends TestCase
 
     public function testHas(): void
     {
-        $map = new Map(Type::ARRAY, Type::STRING);
+        $map = new Map(Type::Array, Type::String);
 
         $map->set([1, 2, 3], 'tested');
 
@@ -42,7 +42,7 @@ class MapTest extends TestCase
 
     public function testSet(): void
     {
-        $map = new Map(Type::ARRAY, Type::STRING);
+        $map = new Map(Type::Array, Type::String);
 
         $map->set([1, 2, 3], 'tested');
 
@@ -52,10 +52,10 @@ class MapTest extends TestCase
     public function testAllows(): void
     {
         $cases = [
-            ['type' => Type::INTEGER, 'value' => 1],
-            ['type' => Type::STRING, 'value' => 'test'],
-            ['type' => Type::ARRAY, 'value' => []],
-            ['type' => Type::OBJECT, 'value' => new stdClass()],
+            ['type' => Type::Integer, 'value' => 1],
+            ['type' => Type::String, 'value' => 'test'],
+            ['type' => Type::Array, 'value' => []],
+            ['type' => Type::Object, 'value' => new stdClass()],
             ['type' => ObjectType::fromClass(TestCase::class), 'value' => $this],
         ];
 
@@ -87,7 +87,7 @@ class MapTest extends TestCase
     /** @noinspection PhpIllegalArrayKeyTypeInspection */
     public function testArrayAccess(): void
     {
-        $map = new Map(ObjectType::fromClass(TestCase::class), Type::OBJECT);
+        $map = new Map(ObjectType::fromClass(TestCase::class), Type::Object);
 
         $obj = new stdClass();
         $map[$this] = $obj;

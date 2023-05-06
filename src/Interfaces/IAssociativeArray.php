@@ -7,19 +7,21 @@ use Phox\Structures\Exceptions\ArrayException;
 /**
  * @template T
  */
-interface IAssociativeArray
+interface IAssociativeArray extends IArray
 {
-    /**
-     * @param T $value
-     */
-    public function add(mixed $value): void;
-
     /**
      * @param int|string $key
      * @return T
      * @throws ArrayException
      */
     public function get(int|string $key): mixed;
+
+    /**
+     * @param int|string $key
+     * @param T|null $default
+     * @return T
+     */
+    public function tryGet(int|string $key, mixed $default = null): mixed;
 
     /**
      * Set element to array by index

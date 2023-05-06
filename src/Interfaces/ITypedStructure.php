@@ -22,4 +22,9 @@ interface ITypedStructure
      * @return IType<T>
      */
     public function getType(): IType;
+
+    /**
+     * @return array<T>
+     */
+    public function toArray(): array;
 }

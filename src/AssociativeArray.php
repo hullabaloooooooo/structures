@@ -17,6 +17,11 @@ class AssociativeArray extends ArrayObject implements IAssociativeArray
         return is_string($key) ? $this->items[$key] ?? throw new ArrayException() : parent::get($key);
     }
 
+    public function tryGet(int|string $key, mixed $default = null): mixed
+    {
+        return is_string($key) ? $this->items[$key] ?? $default : parent::tryGet($key, $default);
+    }
+
     public function set(int|string|null $key, mixed $value): void
     {
         if (is_string($key)) {

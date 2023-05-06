@@ -9,7 +9,7 @@ class AssociativeCollectionTest extends TestCase
 {
     public function testCollectionMethodsWithStringKey(): void
     {
-        $collection = new AssociativeCollection(Type::INTEGER);
+        $collection = new AssociativeCollection(Type::Integer);
 
         $collection->set('key', 1);
 

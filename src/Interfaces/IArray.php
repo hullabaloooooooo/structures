@@ -22,6 +22,13 @@ interface IArray
     public function get(int $key): mixed;
 
     /**
+     * @param int $key
+     * @param T|null $default
+     * @return T
+     */
+    public function tryGet(int $key, mixed $default = null): mixed;
+
+    /**
      * Set element to array by index
      *
      * @param int $key

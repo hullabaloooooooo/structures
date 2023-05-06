@@ -106,11 +106,19 @@ class Map extends Arrayable implements IMap
         return in_array($key, $this->keys);
     }
 
+    /**
+     * @param K $key
+     * @return bool
+     */
     public function allowsKey(mixed $key): bool
     {
         return $this->allowsType($this->keyType, $key);
     }
 
+    /**
+     * @param T $value
+     * @return bool
+     */
     public function allows(mixed $value): bool
     {
         return $this->allowsType($this->valueType, $value);
@@ -133,8 +141,26 @@ class Map extends Arrayable implements IMap
         }
     }
 
+    /**
+     * @param T $value
+     * @return void
+     */
     public function add(mixed $value): void
     {
         throw new LogicException();
+    }
+
+    /**
+     * @param K $key
+     * @param T|null $default
+     * @return T|null
+     */
+    public function tryGet(mixed $key, mixed $default = null): mixed
+    {
+        $index = array_search($key, $this->keys);
+
+        return array_key_exists($index, $this->values)
+            ? $this->values[$index]
+            : $default;
     }
 }
